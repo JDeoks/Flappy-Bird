@@ -13,6 +13,8 @@
 		2A6923E829573D7000FA257B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A6923E629573D7000FA257B /* Main.storyboard */; };
 		2A6923EA29573D7100FA257B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A6923E929573D7100FA257B /* Assets.xcassets */; };
 		2A6923ED29573D7100FA257B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A6923EB29573D7100FA257B /* LaunchScreen.storyboard */; };
+		2A6923F42957498E00FA257B /* ActionList.sks in Resources */ = {isa = PBXBuildFile; fileRef = 2A6923F32957498E00FA257B /* ActionList.sks */; };
+		2A6923F629575FE100FA257B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6923F529575FE100FA257B /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +25,8 @@
 		2A6923E729573D7000FA257B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2A6923E929573D7100FA257B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A6923EC29573D7100FA257B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2A6923F32957498E00FA257B /* ActionList.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ActionList.sks; sourceTree = "<group>"; };
+		2A6923F529575FE100FA257B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +62,11 @@
 				2A6923DC29573D7000FA257B /* AppDelegate.swift */,
 				2A6923E229573D7000FA257B /* GameScene.swift */,
 				2A6923E429573D7000FA257B /* GameViewController.swift */,
+				2A6923F529575FE100FA257B /* Constants.swift */,
 				2A6923E629573D7000FA257B /* Main.storyboard */,
 				2A6923E929573D7100FA257B /* Assets.xcassets */,
 				2A6923EB29573D7100FA257B /* LaunchScreen.storyboard */,
+				2A6923F32957498E00FA257B /* ActionList.sks */,
 			);
 			path = "Flappy-Bird";
 			sourceTree = "<group>";
@@ -126,6 +132,7 @@
 				2A6923E829573D7000FA257B /* Main.storyboard in Resources */,
 				2A6923EA29573D7100FA257B /* Assets.xcassets in Resources */,
 				2A6923ED29573D7100FA257B /* LaunchScreen.storyboard in Resources */,
+				2A6923F42957498E00FA257B /* ActionList.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +146,7 @@
 				2A6923E329573D7000FA257B /* GameScene.swift in Sources */,
 				2A6923E529573D7000FA257B /* GameViewController.swift in Sources */,
 				2A6923DD29573D7000FA257B /* AppDelegate.swift in Sources */,
+				2A6923F629575FE100FA257B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
