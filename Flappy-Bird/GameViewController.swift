@@ -9,7 +9,6 @@ import SpriteKit
 
 
 class GameViewController: UIViewController {
-
     override func viewDidLoad() {
         // 뷰가 로드된 뒤 제일 먼저 실행
         super.viewDidLoad()
@@ -30,6 +29,10 @@ class GameViewController: UIViewController {
             view.showsFPS = true
             // 화면 우측 하단에 노드 개수 표시
             view.showsNodeCount = true
+            
+            //스프라이트 히트박스 보여줌
+            view.showsPhysics = true
+
         }
     }
 
