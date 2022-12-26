@@ -14,8 +14,8 @@ enum GameState {
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    
-    var gameSpeed: TimeInterval = 3
+    let cameraNode =  SKCameraNode()
+    var gameSpeed: TimeInterval = 2
     var bird = SKSpriteNode()
     let land = SKSpriteNode(imageNamed: "land")
     var gamestate = GameState.ready
@@ -29,7 +29,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // 뷰컨에 의해서 scene이 present되었을 때
     override func didMove(to view: SKView) {
-        print("hello")
+        
+
         let bgColor = SKColor(red: 114.0/255.0, green: 130.0/255.0, blue: 205.0/255.0, alpha: 1.0)
         self.backgroundColor = bgColor
         
@@ -40,6 +41,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createBird()
         createEnviroment()
         createScore()
+        camera = cameraNode
+        cameraNode.position.x = self.size.width / 2
+        cameraNode.position.y = self.size.height / 2
+        self.addChild(cameraNode)
+
     }
     
     // MARK: -  스프라이트 생성
@@ -60,7 +66,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         
         bird = SKSpriteNode(imageNamed: "bird1")
-        bird.position = CGPoint(x:self.size.width / 2, y: self.size.height / 2)
+        bird.position = CGPoint(x:self.size.width / 4, y: self.size.height / 2)
         bird.zPosition = Layer.bird
         self.addChild(bird)
         
@@ -277,20 +283,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gamestate = .playing
             self.bird.physicsBody?.isDynamic = true
             self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
-            createInfinityPipe(duration: 3)
+            createInfinityPipe(duration: 2)
 
         case .playing:
             self.bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
             self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
         case .dead:
-            let scene: GameScene = GameScene(size: self.size)
-            let transition: SKTransition = SKTransition.doorsOpenHorizontal(withDuration: 1)
-            self.view?.presentScene(scene, transition: transition)
+            //  파라미터인 touches의 제일 첫 번째 요소를 가져옴
+            let touch: UITouch? = touches.first
+            if let location = touch?.location(in: self){
+                let nodesArray = self.nodes(at: location)
+                if nodesArray.first?.name == "restartBtn"{
+                    let scene: GameScene = GameScene(size: self.size)
+                    let transition: SKTransition = SKTransition.doorsOpenHorizontal(withDuration: 1)
+                    self.view?.presentScene(scene, transition: transition)
+                }
+            }
+
         }
         
 
     }
     
+    
+    //  두 바디가 서로 처음 접촉할 때 호출되는 함수
     func didBegin(_ contact: SKPhysicsContact) {
 //        print("didBegin")
         var firstBody = SKPhysicsBody()
@@ -310,13 +326,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch collideType {
         case PhysicsCategory.land:
             print("land")
-            gameOver()
+            if gamestate == .playing{
+                gameOver()
+            }
         case PhysicsCategory.pipe:
             print("pipe")
-            gameOver()
+            if gamestate == .playing{
+                gameOver()
+            }
         case PhysicsCategory.ceiling:
             print("ceiling")
-            gameOver()
+            if gamestate == .playing{
+                gameOver()
+            }
         case PhysicsCategory.score:
             print("score")
             score += 1
@@ -328,8 +350,104 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func gameOver() {
+        damageEffect()
+        cameraShake()
+        self.bird.removeAllActions()
+        createGameOverBoard()
         self.gamestate = .dead
-        self.isPaused = true
+
+        //self.isPaused = true
+    }
+    // 최고기록 앱 내에 저장
+    func recordBestScore() {
+        let userDefault = UserDefaults.standard
+        var bestScore = userDefault.integer(forKey: "highScore")
+        if self.score > bestScore {
+            bestScore = self.score
+            userDefault.set(bestScore, forKey: "highScore")
+        }
+        userDefault.synchronize()
+    }
+    //  게임 오버했을 때 점수판 띄움
+    func createGameOverBoard() {
+        // 최고기록 업데이트
+        recordBestScore()
+        let gameOverBoard = SKSpriteNode(imageNamed: "gameoverBoard")
+        gameOverBoard.position = CGPoint(x: self.size.width / 2, y:  -self.size.height / 2)
+        gameOverBoard.zPosition = Layer.hud
+        addChild(gameOverBoard)
+        
+        // 메달 표시
+        var medal = SKSpriteNode()
+        if score >= 10{
+            medal = SKSpriteNode(imageNamed: "medalPlatinum")
+        }
+        else if score >= 5 {
+            medal = SKSpriteNode(imageNamed: "medalGold")
+        }
+        else if score >= 3 {
+            medal = SKSpriteNode(imageNamed: "medalSilver")
+        }
+        else if score >= 1 {
+            medal = SKSpriteNode(imageNamed: "medalBronze")
+        }
+        medal.position = CGPoint(x: -gameOverBoard.size.width * 0.27, y: gameOverBoard.size.height * 0.02)
+        gameOverBoard.addChild(medal)
+        
+        // 현재 스코어 라벨
+        let scoreLabel = SKLabelNode(fontNamed: "Minercraftory")
+        scoreLabel.fontSize = 13
+        scoreLabel.fontColor = .orange
+        scoreLabel.text = "\(self.score)"
+        scoreLabel.horizontalAlignmentMode = .left
+        scoreLabel.position = CGPoint(x: gameOverBoard.size.width * 0.35, y: gameOverBoard.size.height * 0.07)
+        // 이렇게 하면 zposition hud+0.1됨
+        scoreLabel.zPosition = 0.1
+        gameOverBoard.addChild(scoreLabel)
+        
+        //  bestScore 라벨 표시
+        let bestScore = UserDefaults.standard.integer(forKey:  "highScore")
+        let bestScoreLabel = SKLabelNode(fontNamed: "Minercraftory")
+        bestScoreLabel.fontSize = 13
+        bestScoreLabel.fontColor = .orange
+        bestScoreLabel.text = "\(bestScore)"
+        bestScoreLabel.horizontalAlignmentMode = .left
+        bestScoreLabel.position = CGPoint(x: gameOverBoard.size.width * 0.35, y: -gameOverBoard.size.height * 0.07)
+        gameOverBoard.addChild(bestScoreLabel)
+        
+        gameOverBoard.run(SKAction.sequence([SKAction.moveTo(y: self.size.height / 2, duration: 1), SKAction.run {
+            self.speed = 0
+        }]))
+        
+        
+        let restartBtn = SKSpriteNode(imageNamed: "playBtn")
+        //  이름을 붙이면 함수 외에서도 이 버튼을 호출 할 수 있음
+        restartBtn.name = "restartBtn"
+        restartBtn.position = CGPoint(x: 0, y: -gameOverBoard.size.height * 0.35)
+        restartBtn.zPosition = 0.1
+        gameOverBoard.addChild(restartBtn)
+    }
+    // 충돌했을 때 깜빡깜빡 효과
+    func damageEffect() {
+        let flashNode = SKSpriteNode(color: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0), size: self.size)
+        let actionSequence = SKAction.sequence([SKAction.wait(forDuration: 0.01), SKAction.removeFromParent()])
+        flashNode.name = "flashNode"
+        flashNode.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+        flashNode.zPosition = Layer.hud
+        addChild(flashNode)
+        flashNode.run(actionSequence)
+        
+        // 게임 화면에 카메라 추가한 후 흔들기
+    }
+    
+    func cameraShake() {
+        let moveLeft = SKAction.moveTo(x: self.size.width / 2 - 5, duration: 0.1)
+        let moveRight = SKAction.moveTo(x: self.size.width / 2 + 5, duration: 0.1)
+        let moveReset = SKAction.moveTo(x: self.size.width / 2, duration: 0.1)
+
+        let shakeAction = SKAction.sequence([moveLeft, moveRight, moveLeft, moveRight, moveReset])
+        shakeAction.timingMode = .easeInEaseOut
+        cameraNode.run(shakeAction)
     }
 }
 

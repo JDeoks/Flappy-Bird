@@ -68,9 +68,9 @@
 				2A6923F529575FE100FA257B /* Constants.swift */,
 				2A6923E629573D7000FA257B /* Main.storyboard */,
 				2A6923E929573D7100FA257B /* Assets.xcassets */,
+				2A6923F729599B0400FA257B /* Minercraftory.ttf */,
 				2A6923EB29573D7100FA257B /* LaunchScreen.storyboard */,
 				2A6923F32957498E00FA257B /* ActionList.sks */,
-				2A6923F729599B0400FA257B /* Minercraftory.ttf */,
 			);
 			path = "Flappy-Bird";
 			sourceTree = "<group>";
