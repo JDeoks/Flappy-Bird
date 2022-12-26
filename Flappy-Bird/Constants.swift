@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SpriteKit
 
 struct Layer {
     static let sky: CGFloat = 1
@@ -22,4 +23,12 @@ struct PhysicsCategory {
     static let ceiling: UInt32 =  0x1 << 2// 4
     static let pipe: UInt32 =  0x1 << 3// 8
     static let score: UInt32 = 0x1 << 4 // 16
+}
+
+struct SoundFX {
+    static let wing = SKAction.playSoundFileNamed("sfxWing.mp3", waitForCompletion: false)
+    static let die = SKAction.playSoundFileNamed("sfxDie.mp3", waitForCompletion: false)
+    static let hit = SKAction.playSoundFileNamed("sfxHit.mp3", waitForCompletion: false)
+    static let point = SKAction.playSoundFileNamed("sfxPoint.mp3", waitForCompletion: false)
+    static let swooshing = SKAction.playSoundFileNamed("sfxSwooshing.mp3", waitForCompletion: false)
 }
