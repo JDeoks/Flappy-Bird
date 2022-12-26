@@ -7,11 +7,18 @@
 
 import SpriteKit
 
+enum GameState {
+    case ready
+    case playing
+    case dead
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var gameSpeed: TimeInterval = 5
+    var gameSpeed: TimeInterval = 3
     var bird = SKSpriteNode()
     let land = SKSpriteNode(imageNamed: "land")
+    var gamestate = GameState.ready
     var score: Int = 0 {
         didSet {
             scoreLabel.text = "\(score)"
@@ -23,7 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // 뷰컨에 의해서 scene이 present되었을 때
     override func didMove(to view: SKView) {
         print("hello")
-        let bgColor = SKColor(red: 81.0/255.0, green: 92.0/255.0, blue: 201.0/255.0, alpha: 1.0)
+        let bgColor = SKColor(red: 114.0/255.0, green: 130.0/255.0, blue: 205.0/255.0, alpha: 1.0)
         self.backgroundColor = bgColor
         
         //  접촉 델리게이트
@@ -32,7 +39,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createBird()
         createEnviroment()
-        createInfinityPipe(duration: 4)
         createScore()
     }
     
@@ -84,7 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //  충돌
         bird.physicsBody?.collisionBitMask = PhysicsCategory.land | PhysicsCategory.pipe | PhysicsCategory.ceiling
         //  물리적 상호작용을 할 것인가요?
-        bird.physicsBody?.isDynamic = true
+        bird.physicsBody?.isDynamic = false
         
         
         
@@ -256,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createInfinityPipe(duration: TimeInterval){
         //  duration: 쉬는 시간
         let create = SKAction.run { [unowned self] in
-            self.setPipe(pipeDistance: 100)
+            self.setPipe(pipeDistance: 150)
         }
         
         let wait = SKAction.wait(forDuration: duration)
@@ -265,8 +271,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     // MARK: - 게임 알고리즘
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
+        
+        switch gamestate {
+        case .ready:
+            gamestate = .playing
+            self.bird.physicsBody?.isDynamic = true
+            self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+            createInfinityPipe(duration: 3)
+
+        case .playing:
+            self.bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+        case .dead:
+            let scene: GameScene = GameScene(size: self.size)
+            let transition: SKTransition = SKTransition.doorsOpenHorizontal(withDuration: 1)
+            self.view?.presentScene(scene, transition: transition)
+        }
+        
+
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -287,12 +309,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        print(secondBody.categoryBitMask)
         switch collideType {
         case PhysicsCategory.land:
-            
             print("land")
+            gameOver()
         case PhysicsCategory.pipe:
             print("pipe")
+            gameOver()
         case PhysicsCategory.ceiling:
             print("ceiling")
+            gameOver()
         case PhysicsCategory.score:
             print("score")
             score += 1
@@ -302,4 +326,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
     }
+    
+    func gameOver() {
+        self.gamestate = .dead
+        self.isPaused = true
+    }
 }
+
+
