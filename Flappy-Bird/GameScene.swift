@@ -7,25 +7,53 @@
 
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var gameSpeed: Int = 5
-    
+    var gameSpeed: TimeInterval = 5
+    var bird = SKSpriteNode()
     let land = SKSpriteNode(imageNamed: "land")
+    var score: Int = 0 {
+        didSet {
+            scoreLabel.text = "\(score)"
+        }
+    }
+    var scoreLabel = SKLabelNode()
+    
+
     // 뷰컨에 의해서 scene이 present되었을 때
     override func didMove(to view: SKView) {
-        let bgColor = SKColor(red: 81.0/255.0, green: 892.0/255.0, blue: 201.0/255.0, alpha: 1.0)
+        print("hello")
+        let bgColor = SKColor(red: 81.0/255.0, green: 92.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         self.backgroundColor = bgColor
+        
+        //  접촉 델리게이트
+        self.physicsWorld.contactDelegate = self
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
+        
         createBird()
         createEnviroment()
         createInfinityPipe(duration: 4)
+        createScore()
+    }
+    
+    // MARK: -  스프라이트 생성
+    func createScore() {
+        scoreLabel = SKLabelNode()
+        scoreLabel.fontSize = 30
+        scoreLabel.fontColor = .white
+        scoreLabel.position = CGPoint(x: self.size.width / 2 , y: self.size.height - 100)
+        scoreLabel.zPosition = Layer.hud
+        scoreLabel.horizontalAlignmentMode = .center
+        scoreLabel.text = "\(score)"
+
+        addChild(scoreLabel)
     }
     
     func createBird() {
         // 스프라이트 아틀라스
 
         
-        let bird = SKSpriteNode(imageNamed: "bird1")
+        bird = SKSpriteNode(imageNamed: "bird1")
         bird.position = CGPoint(x:self.size.width / 2, y: self.size.height / 2)
         bird.zPosition = Layer.bird
         self.addChild(bird)
@@ -48,7 +76,7 @@ class GameScene: SKScene {
         //  스프라이트의 center에서 반지름 범위 만큼의 히트박스 생성
         bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.width / 2)
         //  constants.swift에 있는 PhysicsCategory사용해서 contactTestBitMask 설정
-        bird.physicsBody?.contactTestBitMask = PhysicsCategory.bird
+        bird.physicsBody?.categoryBitMask = PhysicsCategory.bird
         
     //  충돌, 접촉 판정할 요소 설정
         //   접촉
@@ -95,7 +123,7 @@ class GameScene: SKScene {
         //  애니메이션 주기
             //20초동안 설정한 방향으로 이동
             //moveBy: 현재 좌표를 기준으로 설정한 좌표로 움직임 지속시간동안에 걸쳐서
-            let moveLeft = SKAction.moveBy(x: -landTexture.size().width, y: 0, duration: TimeInterval(gameSpeed))
+            let moveLeft = SKAction.moveBy(x: -landTexture.size().width, y: 0, duration: gameSpeed)
             let moveReset = SKAction.moveBy(x: landTexture.size().width, y: 0, duration: 0)
             // 두 가지의 skaction으로 배열만들어서 액션시퀀스 생성
             let moveSequence = SKAction.sequence([moveLeft, moveReset])
@@ -123,7 +151,7 @@ class GameScene: SKScene {
             sky.zPosition = Layer.sky
 
             self.addChild(sky)
-            let moveLeft = SKAction.moveBy(x: -sky.size.width, y: 0, duration: TimeInterval(gameSpeed * 2))
+            let moveLeft = SKAction.moveBy(x: -sky.size.width, y: 0, duration: gameSpeed * 2)
             let moveReset = SKAction.moveBy(x: sky.size.width, y: 0, duration: 0)
             // 두 가지의 skaction으로 배열만들어서 액션시퀀스 생성
             let moveSequence = SKAction.sequence([moveLeft, moveReset])
@@ -217,7 +245,7 @@ class GameScene: SKScene {
         pipeCollision.position = CGPoint(x: xPos, y: self.size.height / 2)
         
     // 파이프에 SKAction 추가
-        let moveAct = SKAction.moveBy(x: -endPos, y: 0, duration: TimeInterval(gameSpeed) * (endPos / land.size.width))
+        let moveAct = SKAction.moveBy(x: -endPos, y: 0, duration: gameSpeed * (endPos / land.size.width))
         let moveSeq = SKAction.sequence([moveAct, SKAction.removeFromParent()])
         
         pipeDown.run(moveSeq)
@@ -234,5 +262,44 @@ class GameScene: SKScene {
         let wait = SKAction.wait(forDuration: duration)
         let actseq = SKAction.sequence([create,wait])
         run(SKAction.repeatForever(actseq))
+    }
+    // MARK: - 게임 알고리즘
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        self.bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+//        print("didBegin")
+        var firstBody = SKPhysicsBody()
+        var secondBody = SKPhysicsBody()
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask{
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        }else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        let collideType = secondBody.categoryBitMask
+//        print(firstBody.categoryBitMask)
+//        print(secondBody.categoryBitMask)
+        switch collideType {
+        case PhysicsCategory.land:
+            
+            print("land")
+        case PhysicsCategory.pipe:
+            print("pipe")
+        case PhysicsCategory.ceiling:
+            print("ceiling")
+        case PhysicsCategory.score:
+            print("score")
+            score += 1
+            
+        default:
+            print("default")
+        }
+        
     }
 }

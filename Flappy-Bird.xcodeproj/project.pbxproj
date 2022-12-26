@@ -27,6 +27,8 @@
 		2A6923EC29573D7100FA257B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2A6923F32957498E00FA257B /* ActionList.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ActionList.sks; sourceTree = "<group>"; };
 		2A6923F529575FE100FA257B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2A6923F729599B0400FA257B /* Minercraftory.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Minercraftory.ttf; sourceTree = "<group>"; };
+		2A6923F829599B5000FA257B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		2A6923DB29573D7000FA257B /* Flappy-Bird */ = {
 			isa = PBXGroup;
 			children = (
+				2A6923F829599B5000FA257B /* Info.plist */,
 				2A6923DC29573D7000FA257B /* AppDelegate.swift */,
 				2A6923E229573D7000FA257B /* GameScene.swift */,
 				2A6923E429573D7000FA257B /* GameViewController.swift */,
@@ -67,6 +70,7 @@
 				2A6923E929573D7100FA257B /* Assets.xcassets */,
 				2A6923EB29573D7100FA257B /* LaunchScreen.storyboard */,
 				2A6923F32957498E00FA257B /* ActionList.sks */,
+				2A6923F729599B0400FA257B /* Minercraftory.ttf */,
 			);
 			path = "Flappy-Bird";
 			sourceTree = "<group>";
@@ -295,6 +299,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39JATSZXJT;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Flappy-Bird/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -323,6 +329,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39JATSZXJT;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Flappy-Bird/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

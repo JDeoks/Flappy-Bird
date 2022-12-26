@@ -13,12 +13,13 @@ struct Layer {
     static let land: CGFloat = 3
     static let ceiling: CGFloat = 4
     static let bird: CGFloat = 5
+    static let hud: CGFloat = 6
 }
  
 struct PhysicsCategory {
-    static let bird: UInt32 = 0x1 << 1 // 1
-    static let land: UInt32 = 0x1 << 2 // 2
-    static let ceiling: UInt32 = 0x1 << 3 // 4
-    static let pipe: UInt32 = 0x1 << 4 / 8
-    static let score: UInt32 = 0x1 << 5 // 16
+    static let bird: UInt32 = 0x1 // 1
+    static let land: UInt32 =  0x1 << 1// 2
+    static let ceiling: UInt32 =  0x1 << 2// 4
+    static let pipe: UInt32 =  0x1 << 3// 8
+    static let score: UInt32 = 0x1 << 4 // 16
 }
