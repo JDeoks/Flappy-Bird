@@ -406,7 +406,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverBoard.addChild(medal)
         
         // 현재 스코어 라벨
-        let scoreLabel = SKLabelNode(fontNamed: "Minercraftory")
+        let scoreLabel = SKLabelNode()
         scoreLabel.fontSize = 13
         scoreLabel.fontColor = .orange
         scoreLabel.text = "\(self.score)"
@@ -418,7 +418,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //  bestScore 라벨 표시
         let bestScore = UserDefaults.standard.integer(forKey:  "highScore")
-        let bestScoreLabel = SKLabelNode(fontNamed: "Minercraftory")
+        let bestScoreLabel = SKLabelNode()
         bestScoreLabel.fontSize = 13
         bestScoreLabel.fontColor = .orange
         bestScoreLabel.text = "\(bestScore)"
